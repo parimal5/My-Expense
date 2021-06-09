@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'widget/transaction_list.dart';
-import 'models/transaction.dart';
+import 'widget/chart.dart';
 import 'widget/new_transaction.dart';
+import 'models/transaction.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,7 +11,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter App',
+      title: 'My Expense',
+      theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+          accentColor: Colors.amber,
+          fontFamily: 'Quicksand',
+          textTheme: ThemeData.light().textTheme.copyWith(
+                  headline6: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              )),
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                      headline6: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontSize: 20,
+                  )))),
       home: MyHomePage(),
     );
   }
@@ -23,18 +40,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transcation> _usertransaction = [
-    Transcation(
-      id: '1',
-      title: 'New Shoe',
-      amount: 5000,
-      date: DateTime.now(),
-    ),
-    Transcation(
-      id: '2',
-      title: 'Grocery',
-      amount: 200,
-      date: DateTime.now(),
-    ),
+    // Transcation(
+    //   id: '1',
+    //   title: 'New Shoe',
+    //   amount: 5000,
+    //   date: DateTime.now(),
+    // ),
+    // Transcation(
+    //   id: '2',
+    //   title: 'Grocery',
+    //   amount: 200,
+    //   date: DateTime.now(),
+    // ),
   ];
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
@@ -57,6 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  List<Transcation> get _recentTransaction {
+    return _usertransaction.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(
+        Duration(days: 7),
+      ));
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,16 +97,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            width: double.infinity,
-            child: Card(
-              color: Colors.blue,
-              child: Text('Chart'),
-            ),
-          ),
+          Chart(_recentTransaction),
           TranscationList(_usertransaction),
         ],
       ),
