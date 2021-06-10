@@ -5,18 +5,18 @@ import '../models/transaction.dart';
 
 class TranscationList extends StatelessWidget {
   final List<Transcation> transaction;
-
-  TranscationList(this.transaction);
+  final Function deletetx;
+  TranscationList(this.transaction, this.deletetx);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 450,
+      height: 525,
       child: transaction.isEmpty
           ? Column(
               children: [
                 Text(
-                  'No transaction added it',
+                  'No transaction added :(',
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 SizedBox(height: 30),
@@ -31,40 +31,33 @@ class TranscationList extends StatelessWidget {
           : ListView.builder(
               itemBuilder: (ctx, index) {
                 return Card(
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 15,
-                        ),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                          width: 2,
-                        )),
-                        padding: EdgeInsets.all(10),
-                        child: Text(
-                          '₹ ${transaction[index].amount.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                          ),
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 5,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                        padding: EdgeInsets.all(2),
+                        child: FittedBox(
+                          child: Text('₹ ${transaction[index].amount}'),
                         ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(transaction[index].title,
-                              style: Theme.of(context).textTheme.headline6),
-                          Text(
-                            DateFormat.yMMMd().format(transaction[index].date),
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      )
-                    ],
+                    ),
+                    title: Text(
+                      transaction[index].title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(
+                      DateFormat.yMMMd().format(transaction[index].date),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
+                      onPressed: () => deletetx(transaction[index].id),
+                    ),
                   ),
                 );
               },

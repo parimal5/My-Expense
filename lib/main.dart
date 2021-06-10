@@ -13,21 +13,26 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My Expense',
       theme: ThemeData(
-          primarySwatch: Colors.deepPurple,
-          accentColor: Colors.amber,
-          fontFamily: 'Quicksand',
-          textTheme: ThemeData.light().textTheme.copyWith(
-                  headline6: TextStyle(
+        primarySwatch: Colors.deepPurple,
+        accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
                 fontFamily: 'OpenSans',
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-              )),
-          appBarTheme: AppBarTheme(
-              textTheme: ThemeData.light().textTheme.copyWith(
-                      headline6: TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontSize: 20,
-                  )))),
+              ),
+              button: TextStyle(color: Colors.white),
+            ),
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 20,
+                ),
+              ),
+        ),
+      ),
       home: MyHomePage(),
     );
   }
@@ -40,18 +45,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transcation> _usertransaction = [
-    // Transcation(
-    //   id: '1',
-    //   title: 'New Shoe',
-    //   amount: 5000,
-    //   date: DateTime.now(),
-    // ),
-    // Transcation(
-    //   id: '2',
-    //   title: 'Grocery',
-    //   amount: 200,
-    //   date: DateTime.now(),
-    // ),
+    Transcation(
+      id: '1',
+      title: 'New Shoe',
+      amount: 5000,
+      date: DateTime.now(),
+    ),
+    Transcation(
+      id: '2',
+      title: 'Grocery',
+      amount: 200,
+      date: DateTime.now(),
+    ),
   ];
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
@@ -62,15 +67,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _addTransaction(String title, double amount) {
+  void _addTransaction(String title, double amount, DateTime chosenDate) {
     final newTx = Transcation(
       id: DateTime.now().toString(),
       title: title,
       amount: amount,
-      date: DateTime.now(),
+      date: chosenDate,
     );
     setState(() {
       _usertransaction.add(newTx);
+    });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _usertransaction.removeWhere((tx) {
+        return tx.id == id;
+      });
     });
   }
 
@@ -100,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Chart(_recentTransaction),
-          TranscationList(_usertransaction),
+          TranscationList(_usertransaction, _deleteTransaction),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
